@@ -3,9 +3,9 @@ namespace SaberTest
 {
     public class ListRandom
     {
-        public ListNode Head;
-        public ListNode Tail;
-        public int Count;
+        public ListNode? Head;
+        public ListNode? Tail;
+        public int? Count;
 
         public void Serialize(Stream s)
         {
@@ -20,12 +20,9 @@ namespace SaberTest
 
         public void Deserialize(Stream s)
         {
-            var nodesData = SerializeHelper.CreateNodesData(s);
-            int count = nodesData.Count;
-            var nodes = SerializeHelper.InitNodeArray(count);
-            SerializeHelper.FillNodes(nodesData, nodes);
+            var listOfNodes = DeserializeHelper.CreateNodesData(s);
+            var list = DeserializeHelper.CreateListRandom(listOfNodes);
 
-            var list = SerializeHelper.CreateListRandom(count, nodes);
             Count = list.Count;
             Head = list.Head;
             Tail = list.Tail;
@@ -44,38 +41,22 @@ namespace SaberTest
             var secondCurrentNode = this.Head;
 
             while((firstCurrentNode != null) || (secondCurrentNode != null))
-            {
-                if (firstCurrentNode.Data != secondCurrentNode.Data)
-                {
-                    return false;
-                }
-
-                if (firstCurrentNode.Next != null && secondCurrentNode.Next != null)
-                {
-                    if (firstCurrentNode.Next.Data != secondCurrentNode.Next.Data)
-                    {
-                        return false;
-                    }
-                }
-
-                if (firstCurrentNode.Previous != null && secondCurrentNode.Previous != null)
-                {
-                    if (firstCurrentNode.Previous.Data != secondCurrentNode.Previous.Data)
-                    {
-                        return false;
-                    }
-                }
-
-                if (firstCurrentNode.Random.Data != secondCurrentNode.Random.Data)
-                {
-                    return false;
-                }
+            {            
+                if (!DataIsEquals(firstCurrentNode!, secondCurrentNode!)) return false;
 
                 firstCurrentNode = firstCurrentNode.Next;
                 secondCurrentNode = secondCurrentNode.Next;
             }
 
             return true;
+        }
+
+        private bool DataIsEquals(ListNode firstListNode, ListNode secondListNode)
+        {
+            return  (firstListNode.Data == secondListNode.Data) && 
+                    (firstListNode.Previous == secondListNode.Previous) && 
+                    (firstListNode.Next == secondListNode.Next) && 
+                    (firstListNode.Random == secondListNode.Random);
         }
     }
 }
