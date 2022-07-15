@@ -18,23 +18,23 @@ namespace SerializeTests
             var randomList2 = GetRandomLinkedList();
 
             Assert.True(!randomList1.Equals(randomList2));
-
         }
 
         [Fact]
-        public void EqualsTest_CreateTwoIdenticalLists_CorrectResult()
+        public void EqualsTest_CreateTwoEqualsLists_CorrectResult()
         {
-            var randomList1 = GetRandomLinkedList();
-            var randomList2 = randomList1;
+            var randomList1 = CreateList();
+            var randomList2 = CreateList();
 
             Assert.True(randomList1.Equals(randomList2));
         }
 
+
         [Fact]
         public void SerializeTest_SerializeOneList_CorrectResult()
         {
-            var serializeRandomList = GetRandomLinkedList();
-            var expectedResult = serializeRandomList;
+            var serializeRandomList = CreateList();
+            var expectedResult = CreateList();
 
             FileStream serializeStream = new(pathToFile, FileMode.OpenOrCreate);
             serializeRandomList.Serialize(serializeStream);
@@ -70,10 +70,11 @@ namespace SerializeTests
         [Fact]
         public void SerializeTest_EmptyData_CorrectResult()
         {
-            var serializeRandomList = GetRandomLinkedList(1);
-            serializeRandomList.Head!.Data = null;
+            var serializeRandomList = CreateList();        
+            var expectedResult = CreateList();
 
-            var expectedResult = serializeRandomList;
+            serializeRandomList.Head!.Data = null;
+            expectedResult.Head!.Data = null;
 
             FileStream serializeStream = new(pathToFile, FileMode.OpenOrCreate);
             serializeRandomList.Serialize(serializeStream);
@@ -86,7 +87,51 @@ namespace SerializeTests
             Assert.True(serializeRandomList.Equals(expectedResult));
         }
 
+        [Fact]
+        public void SerializeTest_SpecialData_CorrectResult()
+        {
+            var serializeRandomList = CreateList();
+            var expectedResult = CreateList();
 
+            serializeRandomList.Head!.Data = "-οποποπ-";
+            expectedResult.Head!.Data = "-οποποπ-";
+
+            FileStream serializeStream = new(pathToFile, FileMode.OpenOrCreate);
+            serializeRandomList.Serialize(serializeStream);
+
+            FileStream deserializeStream = new(pathToFile, FileMode.OpenOrCreate);
+            serializeRandomList.Deserialize(deserializeStream);
+
+            File.Delete(pathToFile);
+
+            Assert.True(serializeRandomList.Equals(expectedResult));
+        }
+
+        private ListRandom CreateList()
+        {
+            ListRandom list = new ListRandom();
+
+            for(int i = 0; i < 10; i++)
+            {
+                var newNode = new ListNode();
+                AddNextNode(list, newNode);
+            }
+
+            var randomReference = new int[] { 0, 4, 1, 6, 6, 2, 9, 1, 4, 5 };
+            var currentNode = list.Head;
+            var count = 0;
+
+            if (list.Count != null) count = list.Count - 1;
+
+            for(int j = 0; j <= count; j++)
+            {
+                currentNode.Data = j.ToString();
+                currentNode.Random = GetNodeByNumber(list, randomReference[j]);
+                currentNode = currentNode.Next;
+            }
+
+            return list;
+        }
 
         private ListRandom GetRandomLinkedList(int countOfNodes = -1)
         {
@@ -138,7 +183,7 @@ namespace SerializeTests
 
             var count = 0;
 
-            if (list.Count != null) count = list.Count.Value - 1;
+            if (list.Count != null) count = list.Count - 1;
 
             while(currentNode != null)
             {

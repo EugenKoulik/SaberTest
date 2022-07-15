@@ -29,11 +29,12 @@
                 listOfNodes.Add(new ListNode() { Data = nodesData[i].Data! });
             }
 
-            for (int i = 1; i < listOfNodes.Count - 1; i++)
+            for (int i = 0; i < listOfNodes.Count; i++)
             {
-                listOfNodes[i].Previous = listOfNodes[i - 1];
-                listOfNodes[i].Next = listOfNodes[i + 1];
-                listOfNodes[i].Random = listOfNodes[nodesData[i].RandomId].Random;
+                if (i != 0) listOfNodes[i].Previous = listOfNodes[i - 1];             
+                if (i != listOfNodes.Count - 1) listOfNodes[i].Next = listOfNodes[i + 1];
+
+                listOfNodes[i].Random = listOfNodes[nodesData[i].RandomId];
             }
 
             var list = new ListRandom
@@ -48,12 +49,13 @@
 
         private static NodeData GetNodeData(string line)
         {
-            var properties = line.Split(new char[] {SerializeConstants.SPLIT_SYMBOL}, StringSplitOptions.RemoveEmptyEntries);
+
+            var properties = line.Split(new char[] {SerializeConstants.SPLIT_SYMBOL}, 3);
             var id = int.Parse(properties[0]);
             var randomId = int.Parse(properties[1]);
             string? data = null;
 
-            if (properties.Length == 3)
+            if (properties[2] != "")
             {
                 data = properties[2];
             }

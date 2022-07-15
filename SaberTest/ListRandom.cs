@@ -5,7 +5,7 @@ namespace SaberTest
     {
         public ListNode? Head;
         public ListNode? Tail;
-        public int? Count;
+        public int Count;
 
         public void Serialize(Stream s)
         {
@@ -40,9 +40,12 @@ namespace SaberTest
             var firstCurrentNode = item.Head;
             var secondCurrentNode = this.Head;
 
-            while((firstCurrentNode != null) || (secondCurrentNode != null))
-            {            
-                if (!DataIsEquals(firstCurrentNode!, secondCurrentNode!)) return false;
+            while ((firstCurrentNode != null) || (secondCurrentNode != null))
+            {
+                if (!DataIsEquals(firstCurrentNode!, secondCurrentNode!)) 
+                {
+                    return false;
+                } 
 
                 firstCurrentNode = firstCurrentNode.Next;
                 secondCurrentNode = secondCurrentNode.Next;
@@ -53,10 +56,8 @@ namespace SaberTest
 
         private bool DataIsEquals(ListNode firstListNode, ListNode secondListNode)
         {
-            return  (firstListNode.Data == secondListNode.Data) && 
-                    (firstListNode.Previous == secondListNode.Previous) && 
-                    (firstListNode.Next == secondListNode.Next) && 
-                    (firstListNode.Random == secondListNode.Random);
+            return  (Equals(firstListNode.Data, secondListNode.Data)) && 
+                    (Equals(firstListNode.Random.Data, secondListNode.Random.Data));
         }
     }
 }
