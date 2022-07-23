@@ -66,35 +66,22 @@ namespace SerializeTests
         
         }
 
+        [Theory]
+        [InlineData("----")]
+        [InlineData("-jvnfjrg-rvr")]
+        [InlineData("")]
+        [InlineData(null)]
+        [InlineData("\n-\n\r")]
+        [InlineData("\n")]
+        [InlineData("\r\r\r")]
 
-        [Fact]
-        public void SerializeTest_EmptyData_CorrectResult()
-        {
-            var serializeRandomList = CreateList();        
-            var expectedResult = CreateList();
-
-            serializeRandomList.Head!.Data = null;
-            expectedResult.Head!.Data = null;
-
-            FileStream serializeStream = new(pathToFile, FileMode.OpenOrCreate);
-            serializeRandomList.Serialize(serializeStream);
-
-            FileStream deserializeStream = new(pathToFile, FileMode.OpenOrCreate);
-            serializeRandomList.Deserialize(deserializeStream);
-
-            File.Delete(pathToFile);
-
-            Assert.True(serializeRandomList.Equals(expectedResult));
-        }
-
-        [Fact]
-        public void SerializeTest_SpecialData_CorrectResult()
+        public void SerializeTest_SpecialData_CorrectResult(string data)
         {
             var serializeRandomList = CreateList();
             var expectedResult = CreateList();
 
-            serializeRandomList.Head!.Data = "-οποποπ-";
-            expectedResult.Head!.Data = "-οποποπ-";
+            serializeRandomList.Head!.Data = data;
+            expectedResult.Head!.Data = data;
 
             FileStream serializeStream = new(pathToFile, FileMode.OpenOrCreate);
             serializeRandomList.Serialize(serializeStream);
@@ -104,7 +91,7 @@ namespace SerializeTests
 
             File.Delete(pathToFile);
 
-            Assert.True(serializeRandomList.Equals(expectedResult));
+            Assert.Equal(expectedResult.Head.Data, serializeRandomList.Head.Data);
         }
 
         private ListRandom CreateList()

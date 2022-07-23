@@ -28,14 +28,13 @@ namespace SaberTest
 
             for (int i = 0; i < listNodes.Count; i++)
             {
-                ListNode? currentNode = listNodes[i];
-                stringBuilder.AppendLine($"{i}{SerializeConstants.SPLIT_SYMBOL}{GetId(listNodes, currentNode.Random)}{SerializeConstants.SPLIT_SYMBOL}{currentNode.Data}");
+                stringBuilder.Append($"{i}{listNodes[i].Data}{GetId(listNodes, listNodes[i].Random)}");
             }
 
             return stringBuilder.ToString();
         }
 
-        private static int GetId(List<ListNode> listNodes, ListNode node)
+        public static int GetId(List<ListNode> listNodes, ListNode node)
         {
             return listNodes.IndexOf(node);
         }

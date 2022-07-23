@@ -6,16 +6,20 @@
         {
             var nodesData = new List<NodeData>();
 
-            using (var sr = new StreamReader(stream))
+            using (BinaryReader reader = new BinaryReader(stream))
             {
-                string line;
+                string data;
+                int randomId;
+                int id = 0;
 
-                while ((line = sr.ReadLine()) != null)
+                while (reader.PeekChar() != -1)
                 {
-                    nodesData.Add(GetNodeData(line));
+                    data = reader.ReadString();
+                    randomId = reader.ReadInt32();
+
+                    nodesData.Add(new NodeData() { Id = id, RandomId = randomId, Data = data });
                 }
             }
-
             return nodesData;
         }
 
@@ -46,22 +50,5 @@
 
             return list;
         }
-
-        private static NodeData GetNodeData(string line)
-        {
-
-            var properties = line.Split(new char[] {SerializeConstants.SPLIT_SYMBOL}, 3);
-            var id = int.Parse(properties[0]);
-            var randomId = int.Parse(properties[1]);
-            string? data = null;
-
-            if (properties[2] != "")
-            {
-                data = properties[2];
-            }
-
-            return new NodeData() { Id = id, RandomId = randomId, Data = data };
-        }
-
     }
 }

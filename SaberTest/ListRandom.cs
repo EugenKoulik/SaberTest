@@ -12,9 +12,9 @@ namespace SaberTest
             var listOfNodes = SerializeHelper.GetListOfNodes(this);
             var serializeString = SerializeHelper.GetSerializeString(listOfNodes);
 
-            using (StreamWriter streamWriter = new StreamWriter(s))
+            using (BinaryWriter writer = new BinaryWriter(s))
             {
-                streamWriter.Write(serializeString);
+                writer.Write(serializeString);          
             }
         }
 
